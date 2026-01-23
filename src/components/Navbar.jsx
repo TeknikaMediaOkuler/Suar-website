@@ -6,25 +6,41 @@ import Logo from '../assets/Images/SUAR - LOGO-06.png'; // Using Logo-06 (approx
 
 const Navbar = () => {
     const [isOpen, setIsOpen] = useState(false);
+    const [scrolled, setScrolled] = useState(false);
 
+    // Scroll listener for logo size animation
+    useEffect(() => {
+        const handleScroll = () => {
+            if (window.scrollY > 100) {
+                setScrolled(true);
+            } else {
+                setScrolled(false);
+            }
+        };
+
+        window.addEventListener('scroll', handleScroll);
+        return () => window.removeEventListener('scroll', handleScroll);
+    }, []);
+
+    // Mobile menu animation
     useEffect(() => {
         if (isOpen) {
-            gsap.to('.menu-overlay', { x: '0%', duration: 0.5, ease: 'power2.out' });
-            gsap.fromTo('.menu-link',
-                { y: 50, opacity: 0 },
-                { y: 0, opacity: 1, duration: 0.5, stagger: 0.1, delay: 0.2 }
+            gsap.to('.mobile-menu', { height: 'auto', duration: 0.4, ease: 'power2.out' });
+            gsap.fromTo('.mobile-menu-link',
+                { y: 20, opacity: 0 },
+                { y: 0, opacity: 1, duration: 0.3, stagger: 0.08, delay: 0.1 }
             );
         } else {
-            gsap.to('.menu-overlay', { x: '100%', duration: 0.5, ease: 'power2.in' });
+            gsap.to('.mobile-menu', { height: 0, duration: 0.3, ease: 'power2.in' });
         }
     }, [isOpen]);
 
     const navLinks = [
-        { name: 'home', path: '/' },
-        { name: 'projects', path: '/work' },
+        { name: 'about', path: '/' },
+        { name: 'project', path: '/work' },
         { name: 'services', path: '/services' },
-        { name: 'products', path: '/articles' }, // Using articles as placeholder for products
-        { name: 'connect', path: '/contact' }
+        { name: 'product', path: '/articles' },
+        { name: 'contact', path: '/contact' }
     ];
 
     return (
@@ -34,51 +50,167 @@ const Navbar = () => {
                 top: 0,
                 left: 0,
                 width: '100%',
-                height: '80px', // slightly taller for logo
+                height: '80px',
                 padding: '0 2rem',
                 display: 'flex',
                 justifyContent: 'space-between',
                 alignItems: 'center',
                 zIndex: 1000,
-                backgroundColor: '#FFFDF5', // Bone White
-                borderBottom: '2px solid #5F52AA', // Purple Border
-                color: '#282824'
+                backgroundColor: '#FFFDF5',
+                borderBottom: '2px solid #5F52AA',
+                color: '#282824',
+                transition: 'all 0.3s ease'
             }}>
 
-                {/* LOGO AREA */}
+                {/* LOGO AREA - with scroll animation */}
                 <Link to="/" style={{
                     height: '100%',
                     display: 'flex',
                     alignItems: 'center',
                     paddingRight: '2rem'
                 }}>
-                    <img src={Logo} alt="SUAR" style={{ height: '50px', objectFit: 'contain' }} />
+                    <img
+                        src={Logo}
+                        alt="SUAR"
+                        style={{
+                            height: scrolled ? '50px' : '120px',
+                            objectFit: 'contain',
+                            transition: 'height 0.3s ease'
+                        }}
+                    />
                 </Link>
 
-                {/* Helper layout for links based on reference: small, top right */}
-                <div style={{ display: 'flex', alignItems: 'center', gap: '2rem' }}>
+                {/* DESKTOP NAVIGATION */}
+                <nav style={{
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: '2rem',
+                }}>
+                    <div className="desktop-nav" style={{
+                        display: 'flex',
+                        alignItems: 'center',
+                        gap: '2rem'
+                    }}>
+                        {navLinks.map(link => (
+                            <Link
+                                key={link.name}
+                                to={link.path}
+                                style={{
+                                    textDecoration: 'none',
+                                    color: '#282824',
+                                    fontSize: '0.9rem',
+                                    fontWeight: 'bold',
+                                    fontFamily: 'var(--content-font)',
+                                    textTransform: 'lowercase',
+                                    display: 'flex',
+                                    alignItems: 'center'
+                                }}
+                            >
+                                <span style={{ fontSize: '1.2rem', color: '#5F52AA', marginRight: '5px', lineHeight: 0 }}>•</span>
+                                {link.name}
+                            </Link>
+                        ))}
+                    </div>
+
+                    {/* MOBILE HAMBURGER */}
+                    <button
+                        className="mobile-hamburger"
+                        onClick={() => setIsOpen(!isOpen)}
+                        style={{
+                            display: 'none',
+                            background: 'none',
+                            border: 'none',
+                            cursor: 'pointer',
+                            flexDirection: 'column',
+                            gap: '5px',
+                            padding: '10px'
+                        }}
+                        aria-label="Toggle menu"
+                    >
+                        <span style={{
+                            width: '25px',
+                            height: '3px',
+                            backgroundColor: '#5F52AA',
+                            transition: 'all 0.3s ease',
+                            transform: isOpen ? 'rotate(45deg) translateY(8px)' : 'none'
+                        }}></span>
+                        <span style={{
+                            width: '25px',
+                            height: '3px',
+                            backgroundColor: '#5F52AA',
+                            transition: 'all 0.3s ease',
+                            opacity: isOpen ? 0 : 1
+                        }}></span>
+                        <span style={{
+                            width: '25px',
+                            height: '3px',
+                            backgroundColor: '#5F52AA',
+                            transition: 'all 0.3s ease',
+                            transform: isOpen ? 'rotate(-45deg) translateY(-8px)' : 'none'
+                        }}></span>
+                    </button>
+                </nav>
+            </header>
+
+            {/* MOBILE ACCORDION MENU */}
+            <div
+                className="mobile-menu"
+                style={{
+                    position: 'fixed',
+                    top: '80px',
+                    left: 0,
+                    width: '100%',
+                    backgroundColor: '#FFFDF5',
+                    borderBottom: '2px solid #5F52AA',
+                    zIndex: 999,
+                    overflow: 'hidden',
+                    height: 0
+                }}
+            >
+                <nav style={{ padding: '1rem 2rem' }}>
                     {navLinks.map(link => (
                         <Link
                             key={link.name}
                             to={link.path}
+                            className="mobile-menu-link"
+                            onClick={() => setIsOpen(false)}
                             style={{
+                                display: 'flex',
+                                alignItems: 'center',
                                 textDecoration: 'none',
                                 color: '#282824',
-                                fontSize: '0.9rem',
+                                fontSize: '1.2rem',
                                 fontWeight: 'bold',
                                 fontFamily: 'var(--content-font)',
                                 textTransform: 'lowercase',
-                                display: 'flex',
-                                alignItems: 'center'
+                                padding: '1rem 0',
+                                borderBottom: '1px solid rgba(95, 82, 170, 0.2)'
                             }}
                         >
-                            {/* Small dot/bullet based on reference */}
-                            <span style={{ fontSize: '1.2rem', color: '#5F52AA', marginRight: '5px', lineHeight: 0 }}>•</span>
+                            <span style={{ fontSize: '1.5rem', color: '#5F52AA', marginRight: '10px', lineHeight: 0 }}>•</span>
                             {link.name}
                         </Link>
                     ))}
-                </div>
-            </header>
+                </nav>
+            </div>
+
+            {/* RESPONSIVE STYLES */}
+            <style>{`
+                @media (max-width: 768px) {
+                    .desktop-nav {
+                        display: none !important;
+                    }
+                    .mobile-hamburger {
+                        display: flex !important;
+                    }
+                }
+                
+                @media (min-width: 769px) {
+                    .mobile-menu {
+                        display: none !important;
+                    }
+                }
+            `}</style>
         </>
     );
 };
