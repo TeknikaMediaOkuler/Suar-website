@@ -3,6 +3,7 @@ import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { Link } from 'react-router-dom';
 import Logo from '../assets/Images/SUAR - LOGO-02.png';
+import Container3D from '../components/Container3D';
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -157,6 +158,9 @@ const Home = () => {
 
             <div className="page-home" style={{ marginTop: '0', overflowX: 'hidden', width: '100%' }}>
 
+                {/* Fixed 3D Container Layer */}
+                <Container3D />
+
                 {/* SECTION 1: HERO */}
                 <section style={{
                     minHeight: '85vh',
@@ -285,8 +289,11 @@ const Home = () => {
                     </div>
                 </section>
 
+                {/* Scroll Spacer for 3D Animation */}
+                <div className="scroll-spacer" style={{ height: '120vh', width: '100%' }}></div>
+
                 {/* SECTION 2: BIOMASS (01) */}
-                <section style={{
+                <section id="biomass-section" style={{
                     backgroundColor: '#5F52AA',
                     color: '#FFFDF5',
                     padding: '6rem 0',

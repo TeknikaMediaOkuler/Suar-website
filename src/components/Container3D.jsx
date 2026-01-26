@@ -11,24 +11,72 @@ const Container3D = () => {
     useEffect(() => {
         const box = boxRef.current;
 
-        // Initial set
+        // Initial set - Centered, scaled down slightly, and HIDDEN
         gsap.set(box, {
-            transformPerspective: 1000,
-            rotationY: -15,
-            rotationX: 10
+            transformPerspective: 0,
+            rotationY: 45,
+            rotationX: 0,
+            scale: 1, // Start slightly smaller/normal
+            x: 0,
+            y: 280,
+            autoAlpha: 1 // Visibility hidden + opacity 0
         });
 
-        // Scroll Animation: Rotate and Move
+        // 1. Entrance (Fade In)
+        // separate from movement to ensure it's visible quickly
         gsap.to(box, {
-            rotationY: 360,
-            y: 100,
+            autoAlpha: 1,
+            duration: 0.1,
             scrollTrigger: {
-                trigger: containerRef.current,
-                start: "top bottom",
-                end: "bottom top",
+                trigger: ".scroll-spacer",
+                // [USER CONFIG]: Change 'start' below to adjust when fading starts.
+                // "top bottom" = When the top of the spacer hits the bottom of the viewport.
+                // "top center" = When the top of the spacer hits the center of the viewport.
+                start: "top 75%", // Changed to 75% to delay start slightly 
+                end: "top 70%", // fade in quickly
                 scrub: 1
             }
         });
+
+        // 2. Movement (Center -> Right)
+        gsap.to(box, {
+            scrollTrigger: {
+                trigger: ".scroll-spacer",
+                // [USER CONFIG]: Adjust 'start' to delay or hasten the movement.
+                start: "top 75%",
+                end: "bottom center",
+                scrub: 1
+            },
+            rotationY: 180, // [USER CONFIG]: End rotation angle
+            rotationX: 0,
+            scale: 1, // [USER CONFIG]: End scale size
+
+            // [USER CONFIG]: FINAL POSITION
+            // x: '35vw' means move 35% of the viewport width to the RIGHT. 
+            // Change to '0' for center, '-30vw' for left, '500px' for exact pixels, etc.
+            x: '25vw',
+
+            // y: '0' (default). Add y: '100px' to move it down, or y: '-50px' to move up relative to center.
+
+            ease: "power1.inOut"
+        });
+
+        // 3. Exit / Sticky
+        // Moves the box UP as the section scrolls UP
+        gsap.to(box, {
+            scrollTrigger: {
+                trigger: "#biomass-section",
+                start: "bottom bottom", // as the bottom of biomass hits bottom of viewport
+                end: "bottom top", // until it hits top of viewport
+                scrub: 1
+            },
+            y: '-120vh', // Move up slightly more than 100vh to ensure it clears
+            ease: "none" // Linear movement matches scroll
+        });
+
+        return () => {
+            ScrollTrigger.getAll().forEach(t => t.kill());
+        };
     }, []);
 
     const faceStyle = {
@@ -52,48 +100,64 @@ const Container3D = () => {
     };
 
     return (
-        <div ref={containerRef} style={{ height: '100vh', display: 'flex', justifyContent: 'center', alignItems: 'center', perspective: '1000px', overflow: 'hidden' }}>
+        <div ref={containerRef} style={{
+            position: 'fixed',
+            top: 0,
+            left: 0,
+            width: '100vw',
+            height: '100vh',
+            display: 'flex',
+            justifyContent: 'center',
+            alignItems: 'center',
+            perspective: '1000px',
+            overflow: 'hidden',
+            pointerEvents: 'none', // Allow clicking through
+            zIndex: 10 // Above content but below navbar/etc if needed
+        }}>
             <div ref={boxRef} style={{
                 width: '300px',
                 height: '300px',
                 position: 'relative',
-                transformStyle: 'preserve-3d'
+                transformStyle: 'preserve-3d',
+                opacity: 0, // Ensure hidden initially by CSS
+                visibility: 'hidden'
             }}>
                 {/* Front */}
-                <div style={{ ...faceStyle, transform: 'translateZ(150px)' }}>
-                    <div style={{ fontSize: '1rem', fontWeight: 'bold', marginBottom: '1rem' }}>atoll</div>
-                    <div style={{ width: '50px', height: '50px', border: '2px solid #000', borderRadius: '50%' }}></div>
+                <div style={{ ...faceStyle, transform: 'translateZ(150px)', border: '2px solid #5F52AA' }}>
+                    <div style={{ fontSize: '1.5rem', fontWeight: 'bold', marginBottom: '1rem', color: '#5F52AA', fontFamily: 'Georgia, serif' }}>SUAR</div>
+                    <div style={{ width: '50px', height: '50px', border: '2px solid #5F52AA', borderRadius: '50%', backgroundColor: '#FFC933' }}></div>
                     <div style={{
                         position: 'absolute',
                         bottom: '20px',
-                        background: '#ff4d3a',
-                        color: 'white',
+                        background: '#5F52AA',
+                        color: '#FFFDF5',
                         padding: '5px 10px',
                         fontSize: '0.8rem',
-                        fontWeight: 'bold'
+                        fontWeight: 'bold',
+                        letterSpacing: '1px'
                     }}>
-                        MADE IN MONTREAL
+                        SUAR ENERGI FUTURA
                     </div>
                 </div>
                 {/* Back */}
-                <div style={{ ...faceStyle, transform: 'rotateY(180deg) translateZ(150px)' }}>
-                    <h3 style={textStyle}>MEMORABLE</h3>
-                    <h3 style={textStyle}>BY DESIGN</h3>
+                <div style={{ ...faceStyle, transform: 'rotateY(180deg) translateZ(150px)', border: '2px solid #5F52AA' }}>
+                    <h3 style={{ ...textStyle, color: '#5F52AA' }}>MEMORABLE</h3>
+                    <h3 style={{ ...textStyle, color: '#5F52AA' }}>BY DESIGN</h3>
                 </div>
                 {/* Right */}
-                <div style={{ ...faceStyle, transform: 'rotateY(90deg) translateZ(150px)' }}>
-                    <p style={{ fontFamily: 'var(--content-font)', fontSize: '0.9rem', padding: '1rem', textAlign: 'center' }}>
-                        Crafting Powerful Digital Solutions
+                <div style={{ ...faceStyle, transform: 'rotateY(90deg) translateZ(150px)', border: '2px solid #5F52AA' }}>
+                    <p style={{ fontFamily: 'Arial, sans-serif', fontSize: '1.2rem', padding: '1rem', textAlign: 'center', color: '#5F52AA', fontWeight: 'bold' }}>
+                        Transforming Waste Into Energy
                     </p>
                 </div>
                 {/* Left */}
-                <div style={{ ...faceStyle, transform: 'rotateY(-90deg) translateZ(150px)' }}>
-                    <p style={{ fontWeight: 'bold' }}>info@atolldigital.com</p>
+                <div style={{ ...faceStyle, transform: 'rotateY(-90deg) translateZ(150px)', border: '2px solid #5F52AA' }}>
+                    <p style={{ fontWeight: 'bold', color: '#5F52AA' }}>contact@suar.co.id</p>
                 </div>
                 {/* Top */}
-                <div style={{ ...faceStyle, transform: 'rotateX(90deg) translateZ(150px)', background: '#f8f8f8' }}></div>
+                <div style={{ ...faceStyle, transform: 'rotateX(90deg) translateZ(150px)', background: '#FFC933', border: '2px solid #5F52AA' }}></div>
                 {/* Bottom */}
-                <div style={{ ...faceStyle, transform: 'rotateX(-90deg) translateZ(150px)', background: '#e0e0e0' }}></div>
+                <div style={{ ...faceStyle, transform: 'rotateX(-90deg) translateZ(150px)', background: '#5F52AA', border: '2px solid #5F52AA' }}></div>
             </div>
         </div>
     );
