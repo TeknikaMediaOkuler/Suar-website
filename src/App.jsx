@@ -25,11 +25,17 @@ const ScrollToTop = () => {
   return null;
 };
 
+// Wrapper for Navbar to access router context
+const ConditionalNavbar = () => {
+  const location = useLocation();
+  return <Navbar isHome={location.pathname === '/'} />;
+};
+
 function App() {
   return (
     <Router>
       <ScrollToTop />
-      <Navbar />
+      <ConditionalNavbar />
       <div className="app-content">
         <Routes>
           <Route path="/" element={<Home />} />

@@ -4,23 +4,45 @@ import { gsap } from 'gsap';
 // Importing the Logo
 import Logo from '../assets/Images/SUAR - LOGO-06.png'; // Using Logo-06 (approx 50kb, good size)
 
-const Navbar = () => {
+const Navbar = ({ isHome }) => {
     const [isOpen, setIsOpen] = useState(false);
     const [scrolled, setScrolled] = useState(false);
+    const [isVisible, setIsVisible] = useState(!isHome);
 
-    // Scroll listener for logo size animation
+    useEffect(() => {
+        setIsVisible(!isHome);
+    }, [isHome]);
+
+    // Scroll listener for logo size animation and visibility
     useEffect(() => {
         const handleScroll = () => {
-            if (window.scrollY > 100) {
+            const currentScrollY = window.scrollY;
+
+            // Logo size logic
+            if (currentScrollY > 100) {
                 setScrolled(true);
             } else {
                 setScrolled(false);
             }
+
+            // Visibility logic
+            if (isHome) {
+                if (currentScrollY > window.innerHeight * 0.8) {
+                    setIsVisible(true);
+                } else {
+                    setIsVisible(false);
+                }
+            } else {
+                setIsVisible(true);
+            }
         };
 
         window.addEventListener('scroll', handleScroll);
+        // Check initial state
+        handleScroll();
+
         return () => window.removeEventListener('scroll', handleScroll);
-    }, []);
+    }, [isHome]);
 
     // Mobile menu animation
     useEffect(() => {
@@ -57,9 +79,10 @@ const Navbar = () => {
                 alignItems: 'center',
                 zIndex: 1000,
                 backgroundColor: '#FFFDF5',
-                borderBottom: '2px solid #5F52AA',
+                borderBottom: 'none',
                 color: '#282824',
-                transition: 'all 0.3s ease'
+                transition: 'all 0.3s ease',
+                transform: isVisible ? 'translateY(0)' : 'translateY(-120%)'
             }}>
 
                 {/* LOGO AREA - with scroll animation */}

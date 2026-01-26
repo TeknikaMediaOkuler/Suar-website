@@ -17,11 +17,13 @@ const Contact = () => {
                     <div style={{ border: '1px solid #5F52AA', padding: '2rem' }}>
                         <h2 style={{ fontSize: '2rem', marginBottom: '2rem', color: '#5F52AA' }}>Headquarters</h2>
                         <p style={{ fontSize: '1.2rem', lineHeight: 1.6, marginBottom: '2rem' }}>
-                            123 Biomass Avenue<br />
-                            Sustainable City, SC 45678<br />
+                            SG Building<br />
+                            Jl. Panglima Polim No. 19A 1<br />
+                            Melawai, Kebayoran Baru<br />
+                            Jakarta Selatan, 12160<br />
                             Indonesia
                         </p>
-                        <a href="mailto:info@suar.com" style={{ fontSize: '1.5rem', color: '#FFFDF5', textDecoration: 'none', borderBottom: '1px solid #5F52AA' }}>info@suar.com</a>
+                        <a href="mailto:admin@suar.earth" style={{ fontSize: '1.5rem', color: '#FFFDF5', textDecoration: 'none', borderBottom: '1px solid #5F52AA' }}>admin@suar.earth</a>
                     </div>
 
                     {/* Simple Form */}
