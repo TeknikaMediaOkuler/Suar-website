@@ -111,6 +111,7 @@ const Home = () => {
                     /* Hero Mobile Overrides */
                     .hero-split-layout {
                         flex-direction: column;
+                        position: relative; /* Context for absolute nav */
                     }
                     .hero-logo-col {
                         flex: auto !important;
@@ -123,8 +124,24 @@ const Home = () => {
                         width: 100% !important;
                     }
                     .hero-nav-row {
-                        padding: 1.5rem 1rem !important;
-                        justify-content: center !important;
+                        position: absolute !important;
+                        top: 1rem;
+                        right: 1rem;
+                        width: auto !important;
+                        border-bottom: none !important;
+                        padding: 0 !important;
+                        background: transparent !important;
+                        justify-content: flex-end !important;
+                        z-index: 50;
+                    }
+                    
+                    /* Hide text links on mobile */
+                    .desktop-nav-links {
+                        display: none !important;
+                    }
+                    /* Show hamburger on mobile */
+                    .mobile-menu-icon {
+                        display: block !important;
                     }
 
                     .biomass-container,
@@ -153,6 +170,16 @@ const Home = () => {
                         flex-direction: column !important;
                         gap: 1rem !important;
                     }
+                }
+                
+                /* Desktop Defaults */
+                .mobile-menu-icon {
+                    display: none;
+                }
+                .desktop-nav-links {
+                    display: flex;
+                    gap: 1rem;
+                    flex-wrap: wrap;
                 }
             `}</style>
 
@@ -191,39 +218,48 @@ const Home = () => {
                         <div className="hero-content-col">
                             {/* 1. Navigation Row */}
                             <div className="hero-nav-row">
-                                {/* Nav Items */}
-                                {[
-                                    { name: 'about', path: '/' },
-                                    { name: 'project', path: '/work' },
-                                    { name: 'services', path: '/services' },
-                                    { name: 'product', path: '/articles' },
-                                    { name: 'contact', path: '/contact' }
-                                ].map((item) => (
-                                    <Link
-                                        key={item.name}
-                                        to={item.path}
-                                        style={{
-                                            textDecoration: 'none',
-                                            color: '#5F52AA',
-                                            fontSize: 'clamp(0.9rem, 1.5vw, 1.2rem)',
-                                            fontFamily: 'Arial, sans-serif',
-                                            // Using Arial as placeholder for "interface font" 
-                                            // assuming 'var(--content-font)' is similar
-                                            fontWeight: 'bold',
-                                            display: 'flex',
-                                            alignItems: 'center',
-                                            gap: '0.5rem'
-                                        }}
-                                    >
-                                        <span style={{
-                                            color: '#FFC933', // Yellow accent 
-                                            fontSize: '0.8em',
-                                            transform: 'rotate(90deg)', // Pointing down/rightish
-                                            display: 'inline-block'
-                                        }}>▼</span>
-                                        {item.name}
-                                    </Link>
-                                ))}
+                                {/* Desktop Nav Links */}
+                                <div className="desktop-nav-links">
+                                    {[
+                                        { name: 'about', path: '/' },
+                                        { name: 'project', path: '/work' },
+                                        { name: 'services', path: '/services' },
+                                        { name: 'product', path: '/articles' },
+                                        { name: 'contact', path: '/contact' }
+                                    ].map((item) => (
+                                        <Link
+                                            key={item.name}
+                                            to={item.path}
+                                            style={{
+                                                textDecoration: 'none',
+                                                color: '#5F52AA',
+                                                fontSize: 'clamp(0.9rem, 1.5vw, 1.2rem)',
+                                                fontFamily: 'Arial, sans-serif',
+                                                fontWeight: 'bold',
+                                                display: 'flex',
+                                                alignItems: 'center',
+                                                gap: '0.5rem'
+                                            }}
+                                        >
+                                            <span style={{
+                                                color: '#FFC933',
+                                                fontSize: '0.8em',
+                                                transform: 'rotate(90deg)',
+                                                display: 'inline-block'
+                                            }}>▼</span>
+                                            {item.name}
+                                        </Link>
+                                    ))}
+                                </div>
+
+                                {/* Mobile Hamburger Icon */}
+                                <div className="mobile-menu-icon" style={{ cursor: 'pointer' }}>
+                                    <svg width="40" height="40" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                        <path d="M3 12H21" stroke="#5F52AA" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" />
+                                        <path d="M3 6H21" stroke="#5F52AA" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" />
+                                        <path d="M3 18H21" stroke="#5F52AA" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" />
+                                    </svg>
+                                </div>
                             </div>
 
                             {/* 2. Headline Row */}

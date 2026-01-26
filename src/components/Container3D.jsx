@@ -11,71 +11,125 @@ const Container3D = () => {
     useEffect(() => {
         const box = boxRef.current;
 
-        // Initial set - Centered, scaled down slightly, and HIDDEN
-        gsap.set(box, {
-            transformPerspective: 0,
-            rotationY: 45,
-            rotationX: 0,
-            scale: 1, // Start slightly smaller/normal
-            x: 0,
-            y: 280,
-            autoAlpha: 1 // Visibility hidden + opacity 0
+        // Create a MatchMedia instance
+        let mm = gsap.matchMedia();
+
+        // --- DESKTOP ANIMATION (> 768px) ---
+        mm.add("(min-width: 769px)", () => {
+            // Initial Desktop State
+            gsap.set(box, {
+                transformPerspective: 0,
+                rotationY: 45,
+                rotationX: 0,
+                scale: 1,
+                x: 0,
+                y: 280, // Start lower down
+                autoAlpha: 1
+            });
+
+            // 1. Entrance (Fade In)
+            gsap.to(box, {
+                autoAlpha: 1,
+                duration: 0.1,
+                scrollTrigger: {
+                    trigger: ".scroll-spacer",
+                    start: "top 75%",
+                    end: "top 70%",
+                    scrub: true
+                }
+            });
+
+            // 2. Movement (Center -> Right)
+            gsap.to(box, {
+                scrollTrigger: {
+                    trigger: ".scroll-spacer",
+                    start: "top 75%",
+                    end: "bottom center",
+                    scrub: true
+                },
+                rotationY: 180,
+                rotationX: 0,
+                scale: 1,
+
+                // DESKTOP: Move to Right
+                x: '25vw',
+
+                ease: "power1.inOut"
+            });
+
+            // 3. Exit / Sticky
+            gsap.to(box, {
+                scrollTrigger: {
+                    trigger: "#biomass-section",
+                    start: "bottom bottom",
+                    end: "bottom top",
+                    scrub: true
+                },
+                y: '-120vh',
+                ease: "none"
+            });
         });
 
-        // 1. Entrance (Fade In)
-        // separate from movement to ensure it's visible quickly
-        gsap.to(box, {
-            autoAlpha: 1,
-            duration: 0.1,
-            scrollTrigger: {
-                trigger: ".scroll-spacer",
-                // [USER CONFIG]: Change 'start' below to adjust when fading starts.
-                // "top bottom" = When the top of the spacer hits the bottom of the viewport.
-                // "top center" = When the top of the spacer hits the center of the viewport.
-                start: "top 75%", // Changed to 75% to delay start slightly 
-                end: "top 70%", // fade in quickly
-                scrub: 1
-            }
-        });
+        // --- MOBILE ANIMATION (<= 768px) ---
+        mm.add("(max-width: 768px)", () => {
+            // Initial Mobile State
+            gsap.set(box, {
+                transformPerspective: 0,
+                rotationY: 45,
+                rotationX: 0,
+                scale: 0.5, // [MOBILE]: Start Smaller
+                x: 0,
+                y: 350, // [MOBILE]: Center vertically nicely above content
+                autoAlpha: 1
+            });
 
-        // 2. Movement (Center -> Right)
-        gsap.to(box, {
-            scrollTrigger: {
-                trigger: ".scroll-spacer",
-                // [USER CONFIG]: Adjust 'start' to delay or hasten the movement.
-                start: "top 75%",
-                end: "bottom center",
-                scrub: 1
-            },
-            rotationY: 180, // [USER CONFIG]: End rotation angle
-            rotationX: 0,
-            scale: 1, // [USER CONFIG]: End scale size
+            // 1. Entrance (Fade In)
+            gsap.to(box, {
+                autoAlpha: 1,
+                duration: 0.1,
+                scrollTrigger: {
+                    trigger: ".scroll-spacer",
+                    start: "top 80%",
+                    end: "top 75%",
+                    scrub: true
+                }
+            });
 
-            // [USER CONFIG]: FINAL POSITION
-            // x: '35vw' means move 35% of the viewport width to the RIGHT. 
-            // Change to '0' for center, '-30vw' for left, '500px' for exact pixels, etc.
-            x: '25vw',
+            // 2. Movement (Center -> Still Center, but rotated)
+            gsap.to(box, {
+                scrollTrigger: {
+                    trigger: ".scroll-spacer",
+                    start: "top 80%",
+                    end: "bottom center",
+                    scrub: true
+                },
+                rotationY: 180,
+                rotationX: 0,
+                scale: 0.5, // [MOBILE]: End scale smaller
 
-            // y: '0' (default). Add y: '100px' to move it down, or y: '-50px' to move up relative to center.
+                // [MOBILE]: Keep Centered (0) or move slightly
+                x: 0,
+                // [MOBILE]: Adjust Y to sit "above" content if needed
+                y: 50, // Keep at 50 to match start, or adjust if needed
 
-            ease: "power1.inOut"
-        });
+                ease: "power1.inOut"
+            });
 
-        // 3. Exit / Sticky
-        // Moves the box UP as the section scrolls UP
-        gsap.to(box, {
-            scrollTrigger: {
-                trigger: "#biomass-section",
-                start: "bottom bottom", // as the bottom of biomass hits bottom of viewport
-                end: "bottom top", // until it hits top of viewport
-                scrub: 1
-            },
-            y: '-120vh', // Move up slightly more than 100vh to ensure it clears
-            ease: "none" // Linear movement matches scroll
+            // 3. Exit / Sticky
+            gsap.to(box, {
+                scrollTrigger: {
+                    trigger: "#biomass-section",
+                    start: "bottom bottom",
+                    end: "bottom top",
+                    scrub: 1
+                },
+                y: '-120vh',
+                ease: "none"
+            });
         });
 
         return () => {
-            ScrollTrigger.getAll().forEach(t => t.kill());
+            mm.revert(); // Reverts any GSAP/ScrollTrigger changes from matchMedia
         };
     }, []);
 
@@ -141,8 +195,9 @@ const Container3D = () => {
                 </div>
                 {/* Back */}
                 <div style={{ ...faceStyle, transform: 'rotateY(180deg) translateZ(150px)', border: '2px solid #5F52AA' }}>
-                    <h3 style={{ ...textStyle, color: '#5F52AA' }}>MEMORABLE</h3>
-                    <h3 style={{ ...textStyle, color: '#5F52AA' }}>BY DESIGN</h3>
+                    <h3 style={{ ...textStyle, color: '#5F52AA' }}>ALKALINE</h3>
+                    <h3 style={{ ...textStyle, color: '#5F52AA' }}>EXTRACTION</h3>
+                    <h3 style={{ ...textStyle, color: '#5F52AA' }}>MODULE</h3>
                 </div>
                 {/* Right */}
                 <div style={{ ...faceStyle, transform: 'rotateY(90deg) translateZ(150px)', border: '2px solid #5F52AA' }}>
