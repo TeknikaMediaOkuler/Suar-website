@@ -1,4 +1,4 @@
-import { useRef, useEffect } from 'react';
+import React, { useRef, useEffect } from 'react';
 import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { Link } from 'react-router-dom';
@@ -9,6 +9,20 @@ gsap.registerPlugin(ScrollTrigger);
 
 const Home = () => {
     const tickerRef = useRef(null);
+    const [showStickyNav, setShowStickyNav] = React.useState(false);
+
+    useEffect(() => {
+        const handleScroll = () => {
+            if (window.scrollY > 100) {
+                setShowStickyNav(true);
+            } else {
+                setShowStickyNav(false);
+            }
+        };
+
+        window.addEventListener('scroll', handleScroll);
+        return () => window.removeEventListener('scroll', handleScroll);
+    }, []);
 
     useEffect(() => {
         ScrollTrigger.refresh();
@@ -185,8 +199,88 @@ const Home = () => {
 
             <div className="page-home" style={{ marginTop: '0', overflowX: 'hidden', width: '100%' }}>
 
-                {/* Fixed 3D Container Layer */}
-                <Container3D />
+                {/* Fixed 3D Container Layer - HIDDEN FOR NOW */}
+                {/* <Container3D /> */}
+
+                {/* STICKY NAVBAR (Visible on Scroll) */}
+                <nav style={{
+                    position: 'fixed',
+                    top: 0,
+                    left: 0,
+                    width: '100%',
+                    height: '80px',
+                    backgroundColor: '#FFFDF5',
+                    display: 'flex',
+                    justifyContent: 'flex-start',
+                    alignItems: 'center',
+                    padding: '0',
+                    boxSizing: 'border-box',
+                    zIndex: 1000,
+                    borderBottom: '2px solid #5F52AA',
+                    transform: showStickyNav ? 'translateY(0)' : 'translateY(-100%)',
+                    transition: 'transform 0.3s ease-in-out'
+                }}>
+                    {/* Logo Area */}
+                    <div style={{
+                        height: '100%',
+                        display: 'flex',
+                        alignItems: 'center',
+                        padding: '0 2rem',
+                        borderRight: '2px solid #5F52AA'
+                    }}>
+                        <img src={Logo} alt="SUAR" style={{ height: '40px', width: 'auto' }} />
+                    </div>
+
+                    {/* Desktop Nav Links */}
+                    <div className="desktop-nav-links" style={{
+                        display: 'flex',
+                        gap: '3rem',
+                        alignItems: 'center',
+                        paddingLeft: '3rem',
+                        flex: 1
+                    }}>
+                        {[
+                            { name: 'about', path: '/' },
+                            { name: 'project', path: '/work' },
+                            { name: 'services', path: '/services' },
+                            { name: 'product', path: '/articles' },
+                            { name: 'contact', path: '/contact' }
+                        ].map((item) => (
+                            <Link
+                                key={item.name}
+                                to={item.path}
+                                style={{
+                                    textDecoration: 'none',
+                                    color: '#5F52AA',
+                                    fontSize: '1rem',
+                                    fontFamily: '"Catalogue", sans-serif',
+                                    fontWeight: 'bold',
+                                    display: 'flex',
+                                    alignItems: 'center',
+                                    gap: '0.5rem',
+                                    textTransform: 'lowercase'
+                                }}
+                            >
+                                <span style={{
+                                    color: '#FFC933',
+                                    fontSize: '0.6em',
+                                    transform: 'rotate(-45deg)', // Point South-East
+                                    display: 'inline-block'
+                                }}>▼</span>
+                                {item.name}
+                            </Link>
+                        ))}
+                    </div>
+
+                    {/* Mobile Menu Icon (Placeholder) */}
+                    <div className="mobile-menu-icon" style={{ cursor: 'pointer', paddingRight: '2rem', marginLeft: 'auto' }}>
+                        <svg width="30" height="30" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M3 12H21" stroke="#5F52AA" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" />
+                            <path d="M3 6H21" stroke="#5F52AA" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" />
+                            <path d="M3 18H21" stroke="#5F52AA" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" />
+                        </svg>
+                    </div>
+                </nav>
 
                 {/* SECTION 1: HERO */}
                 <section style={{
@@ -262,6 +356,7 @@ const Home = () => {
                                 </div>
                             </div>
 
+
                             {/* 2. Headline Row */}
                             <div style={{
                                 flex: 1,
@@ -325,75 +420,85 @@ const Home = () => {
                     </div>
                 </section>
 
-                {/* Scroll Spacer for 3D Animation */}
-                <div className="scroll-spacer" style={{ height: '120vh', width: '100%' }}></div>
+                {/* Scroll Spacer for 3D Animation - Removed for now or kept minimal? Let's hide it or keep standard flow since 3D is hidden */}
+                {/* <div className="scroll-spacer" style={{ height: '120vh', width: '100%' }}></div> */}
 
                 {/* SECTION 2: BIOMASS (01) */}
                 <section id="biomass-section" style={{
                     backgroundColor: '#5F52AA',
                     color: '#FFFDF5',
-                    padding: '6rem 0',
+                    minHeight: '100vh', // Full Screen
+                    padding: '2rem 0',
+                    display: 'flex',
+                    flexDirection: 'column',
+                    justifyContent: 'space-between', // Push content to edges
                     position: 'relative',
                     width: '100%',
                     overflowX: 'hidden'
                 }}>
                     <div className="biomass-container" style={{
-                        maxWidth: '1200px',
+                        maxWidth: '1600px', // Wider Design
                         margin: '0 auto',
-                        padding: '0 2rem',
+                        padding: '2rem',
                         width: '100%',
+                        height: '100%',
+                        flex: 1,
+                        display: 'flex',
+                        flexDirection: 'column',
+                        justifyContent: 'space-between',
                         boxSizing: 'border-box'
                     }}>
-                        {/* ABOUT Label */}
-                        <div style={{ marginBottom: '3rem' }}>
-                            <span style={{
-                                fontSize: '0.8rem',
-                                fontWeight: 'bold',
-                                letterSpacing: '0.1em',
-                                color: '#FFFDF5'
-                            }}>
-                                ABOUT
-                            </span>
+                        {/* Top Content: Label + Paragraph */}
+                        <div>
+                            {/* Consolidated Paragraph */}
+                            <div style={{ marginTop: '1rem' }}>
+                                <p className="reveal" style={{
+                                    fontSize: 'clamp(1.5rem, 3vw, 2.5rem)',
+                                    lineHeight: 1.2,
+                                    maxWidth: '900px',
+                                    fontFamily: 'Arial, sans-serif',
+                                    width: '100%',
+                                    marginBottom: '0'
+                                }}>
+                                    <span style={{
+                                        fontSize: '0.9rem',
+                                        fontWeight: 'bold',
+                                        textTransform: 'uppercase',
+                                        letterSpacing: '0.05em',
+                                        color: '#FFFDF5',
+                                        marginRight: '1.5rem',
+                                        verticalAlign: 'middle'
+                                    }}>
+                                        About
+                                    </span>
+                                    <span style={{}}>Powering The Future From What's Left Behind</span>
+                                    Lorem ipsum dolor sit amet, consectetuer adipiscing elit, sed diam nonummy nibh euismod tincidunt ut laoreet dolore magna aliquam erat volutpat.
+                                    Ut wisi enim ad minim veniam, quis nostrud exerci tation ullamcorper suscipit.
+                                </p>
+                            </div>
                         </div>
 
-                        {/* Paragraph at top */}
-                        <div style={{ marginBottom: '4rem' }}>
-                            <p className="reveal" style={{
-                                fontSize: 'clamp(1rem, 2vw, 1.1rem)',
-                                lineHeight: 1.6,
-                                maxWidth: '600px',
-                                fontFamily: 'Arial, sans-serif',
-                                width: '100%'
-                            }}>
-                                <strong>Powering The Future From What's Left Behind</strong><br />
-                                Lorem ipsum dolor sit amet, consectetuer adipiscing elit, sed diam nonummy nibh euismod tincidunt ut laoreet dolore magna aliquam erat volutpat.<br />
-                                Ut wisi enim ad minim veniam, quis nostrud
-                            </p>
-                        </div>
 
-                        {/* BIOMASS heading at bottom */}
+                        {/* BIOMASS heading at very bottom */}
                         <div style={{
                             display: 'flex',
                             justifyContent: 'space-between',
-                            alignItems: 'flex-end',
-                            flexWrap: 'wrap',
-                            gap: '1rem',
+                            alignItems: 'flex-start',
                             width: '100%'
                         }}>
                             <h2 className="reveal" style={{
-                                fontSize: 'clamp(3rem, 12vw, 10rem)',
-                                lineHeight: 0.85,
+                                fontSize: 'clamp(15vw, 15vw, 25rem)', // HUGE Typography
+                                lineHeight: 0.8,
                                 fontFamily: 'Arial, sans-serif',
                                 fontWeight: 'bold',
                                 margin: 0,
-                                wordBreak: 'break-word'
+                                letterSpacing: '-0.05em'
                             }}>
                                 BIOMASS
                             </h2>
                             <span style={{
-                                fontSize: 'clamp(1.5rem, 4vw, 2rem)',
+                                fontSize: 'clamp(3rem, 6vw, 6rem)',
                                 fontWeight: 'bold',
-                                marginBottom: '1rem',
                                 color: '#FFC933'
                             }}>
                                 (01)
@@ -402,235 +507,443 @@ const Home = () => {
                     </div>
                 </section>
 
-                {/* SECTION 3: SERVICES */}
+                {/* SECTION 3: ABOUT (Grid Layout) - "About 2" */}
+                {/* SECTION 3: SERVICES TITLE */}
                 <section style={{
                     backgroundColor: '#FFFDF5',
                     color: '#5F52AA',
-                    padding: '6rem 0',
+                    minHeight: '100vh',
+                    display: 'flex',
+                    alignItems: 'center',
                     borderBottom: '2px solid #5F52AA',
                     width: '100%',
                     overflowX: 'hidden'
                 }}>
-                    <div className="services-container" style={{
-                        maxWidth: '1200px',
+                    <div style={{
+                        maxWidth: '1600px',
                         margin: '0 auto',
-                        padding: '0 2rem',
+                        padding: '2rem',
                         width: '100%',
-                        boxSizing: 'border-box'
+                        boxSizing: 'border-box',
+                        display: 'flex',
+                        flexDirection: 'column',
+                        justifyContent: 'center',
+                        height: '100%'
                     }}>
-                        {/* Large services heading on left */}
                         <h2 className="reveal" style={{
-                            fontSize: 'clamp(3rem, 12vw, 10rem)',
-                            lineHeight: 0.85,
-                            fontFamily: 'Arial, sans-serif',
+                            fontSize: 'clamp(10vw, 15vw, 28rem)',
+                            lineHeight: 1.2,
+                            fontFamily: '"Catalogue", sans-serif',
                             fontWeight: 'bold',
-                            marginBottom: '4rem',
-                            textAlign: 'left',
-                            wordBreak: 'break-word'
+                            margin: 0,
+                            letterSpacing: '0.02em',
+                            textAlign: 'center',
+                            width: '100%',
+                            textTransform: 'lowercase',
                         }}>
                             services
                         </h2>
 
-                        {/* Content box on bottom right */}
-                        <div className="reveal services-content" style={{
+                        {/* Bottom Content Area */}
+                        <div className="reveal" style={{
+                            alignSelf: 'center',
+                            marginTop: 'auto',
+                            paddingTop: '8rem',
                             display: 'flex',
-                            justifyContent: 'flex-end',
                             gap: '2rem',
-                            alignItems: 'flex-start',
-                            width: '100%'
+                            maxWidth: '800px', // Increased slightly to allow more text room
+                            width: '100%',
+                            justifyContent: 'flex-end',
+                            alignItems: 'flex-start' // Ensure text starts at top of box line
                         }}>
                             <div style={{
-                                width: '120px',
-                                height: '120px',
+                                width: '100px',
+                                height: '100px',
                                 backgroundColor: '#5F52AA',
                                 flexShrink: 0
                             }}></div>
                             <p style={{
-                                maxWidth: '400px',
-                                fontSize: 'clamp(0.9rem, 2vw, 1rem)',
-                                color: '#282824',
-                                lineHeight: 1.6,
-                                fontFamily: 'Arial, sans-serif',
-                                width: '100%'
+                                fontSize: '1rem',
+                                color: '#5F52AA',
+                                fontFamily: '"Catalogue", sans-serif'
                             }}>
-                                <strong>Powering The Future From What's Left Behind</strong><br />
-                                Lorem ipsum dolor sit amet, consectetuer adipiscing elit, sed diam nonummy nibh euismod tincidunt ut laoreet dolore magna aliquam erat volutpat.Ut wisi enim ad minim veniam, quis nostrud
+                                Powering The Future From What's Left Behind<br />
+                                Lorem ipsum dolor sit amet, consectetuer adipiscing elit.
                             </p>
                         </div>
                     </div>
                 </section>
 
-                {/* SECTION 4: ABOUT */}
+                {/* SECTION 4: CAPABILITIES LIST */}
                 <section style={{
                     backgroundColor: '#FFFDF5',
                     color: '#5F52AA',
-                    padding: '6rem 0',
-                    borderBottom: '2px solid #5F52AA',
+                    minHeight: '100vh',
+                    display: 'flex',
+                    flexDirection: 'column',
                     width: '100%',
                     overflowX: 'hidden'
                 }}>
-                    <div className="about-grid" style={{
-                        maxWidth: '1200px',
-                        margin: '0 auto',
-                        padding: '0 2rem',
-                        display: 'grid',
-                        gridTemplateColumns: '40% 60%',
-                        gap: '4rem',
+                    {/* Item 1: Project Developer */}
+                    <div className="reveal" style={{
+                        flex: 1,
+                        borderBottom: '2px solid #5F52AA',
+                        display: 'flex',
                         width: '100%',
-                        boxSizing: 'border-box'
+                        alignItems: 'stretch'
                     }}>
-                        {/* Left Column: Large "about" heading */}
-                        <div style={{ display: 'flex', alignItems: 'flex-start', width: '100%' }}>
-                            <h2 className="reveal" style={{
-                                fontSize: 'clamp(3rem, 10vw, 9rem)',
-                                lineHeight: 0.85,
-                                fontFamily: 'Arial, sans-serif',
-                                fontWeight: 'bold',
-                                margin: 0,
-                                wordBreak: 'break-word'
-                            }}>
-                                about
-                            </h2>
+                        <div style={{
+                            flex: '0 0 35%',
+                            maxWidth: '35%',
+                            padding: '4rem',
+                            display: 'flex',
+                            flexDirection: 'column',
+                            justifyContent: 'center'
+                        }}>
+                            <h3 style={{
+                                fontSize: 'clamp(2rem, 5vw, 4rem)',
+                                margin: '0 0 1rem 0',
+                                fontFamily: 'Arial, sans-serif'
+                            }}>Project Developer</h3>
+                            <p style={{
+                                fontSize: '1.2rem',
+                                marginBottom: '2rem',
+                                fontWeight: 'bold'
+                            }}>Design, Engineering & Production</p>
+                            <p style={{ maxWidth: '600px' }}>
+                                Powering The Future From What's Left Behind Lorem ipsum dolor sit amet, consectetuer adipiscing elit.
+                            </p>
                         </div>
-
-                        {/* Right Column */}
-                        <div style={{ display: 'flex', flexDirection: 'column', gap: '2rem', width: '100%' }}>
-                            {/* VIDEO Placeholder */}
-                            <div className="reveal" style={{
+                        <div style={{
+                            flex: '0 0 65%',
+                            maxWidth: '65%',
+                            alignSelf: 'stretch',
+                            minHeight: '100%',
+                            display: 'flex',
+                            alignItems: 'center',
+                            justifyContent: 'center',
+                            padding: '2rem',
+                            boxSizing: 'border-box'
+                        }}>
+                            <div style={{
+                                width: '100%',
+                                height: '100%',
                                 backgroundColor: '#5F52AA',
-                                height: '300px',
                                 display: 'flex',
                                 alignItems: 'center',
                                 justifyContent: 'center',
                                 color: '#FFFDF5',
                                 fontSize: '2rem',
-                                fontWeight: 'bold',
-                                width: '100%'
+                                fontWeight: 'bold'
                             }}>
-                                VIDEO
-                            </div>
 
-                            {/* Project Developer Card */}
-                            <div className="reveal" style={{
-                                borderTop: '2px solid #5F52AA',
-                                paddingTop: '1.5rem',
-                                width: '100%'
+                            </div>
+                        </div>
+                    </div>
+
+                    {/* Item 2: EPC & Offtaker */}
+                    <div className="reveal" style={{
+                        flex: 1,
+                        borderBottom: '2px solid #5F52AA',
+                        display: 'flex',
+                        width: '100%',
+                        alignItems: 'stretch'
+                    }}>
+                        <div style={{
+                            flex: '0 0 35%',
+                            maxWidth: '35%',
+                            padding: '4rem',
+                            display: 'flex',
+                            flexDirection: 'column',
+                            justifyContent: 'center'
+                        }}>
+                            <h3 style={{
+                                fontSize: 'clamp(2rem, 5vw, 4rem)',
+                                margin: '0 0 1rem 0',
+                                fontFamily: 'Arial, sans-serif'
+                            }}>EPC & Offtaker</h3>
+                            <p style={{
+                                fontSize: '1.2rem',
+                                marginBottom: '2rem',
+                                fontWeight: 'bold'
+                            }}>Design, Engineering & Production</p>
+                            <p style={{ maxWidth: '600px' }}>
+                                Powering The Future From What's Left Behind Lorem ipsum dolor sit amet, consectetuer adipiscing elit.
+                            </p>
+                        </div>
+                        <div style={{
+                            flex: '0 0 65%',
+                            maxWidth: '65%',
+                            alignSelf: 'stretch',
+                            minHeight: '100%',
+                            display: 'flex',
+                            alignItems: 'center',
+                            justifyContent: 'center',
+                            padding: '2rem',
+                            boxSizing: 'border-box'
+                        }}>
+                            <div style={{
+                                width: '100%',
+                                height: '100%',
+                                backgroundColor: '#5F52AA',
+                                display: 'flex',
+                                alignItems: 'center',
+                                justifyContent: 'center',
+                                color: '#FFFDF5',
+                                fontSize: '2rem',
+                                fontWeight: 'bold'
                             }}>
-                                <h3 style={{
-                                    fontSize: 'clamp(1.3rem, 3vw, 1.8rem)',
-                                    color: '#5F52AA',
-                                    marginBottom: '0.5rem',
-                                    fontFamily: 'Arial, sans-serif',
+
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                {/* SECTION 5: ABOUT 2 (Former Grid Layout) */}
+                <section style={{
+                    backgroundColor: '#FFFDF5',
+                    color: '#5F52AA',
+                    minHeight: '100vh',
+                    display: 'flex',
+                    alignItems: 'center',
+                    borderBottom: '2px solid #5F52AA',
+                    width: '100%',
+                    overflowX: 'hidden',
+                    boxSizing: 'border-box'
+                }}>
+                    <div className="about-grid" style={{
+                        maxWidth: '100%',
+                        width: '100%',
+                        height: '100vh',
+                        display: 'grid',
+                        gridTemplateColumns: '65% 35%',
+                        gap: '0',
+                        boxSizing: 'border-box'
+                    }}>
+                        {/* Left Column: Massive "about" heading */}
+                        <div style={{
+                            display: 'flex',
+                            alignItems: 'flex-start',
+                            justifyContent: 'center',
+                            width: '100%',
+                            borderRight: '2px solid #5F52AA',
+                            padding: '2rem',
+                            boxSizing: 'border-box'
+                        }}>
+                            <h2 className="reveal" style={{
+                                fontSize: 'clamp(10rem, 20vw, 40rem)',
+                                lineHeight: 0.8,
+                                fontFamily: '"Catalogue", sans-serif',
+                                fontWeight: 'bold',
+                                margin: 0,
+                                letterSpacing: '0.02em',
+                                color: '#5F52AA',
+                                textTransform: 'lowercase'
+                            }}>
+                                about
+                            </h2>
+                        </div>
+
+                        {/* Right Column: Video + Info */}
+                        <div style={{
+                            display: 'flex',
+                            flexDirection: 'column',
+                            width: '100%',
+                            height: '100%'
+                        }}>
+
+                            {/* VIDEO Placeholder (Top Right) */}
+                            <div className="reveal" style={{
+                                flex: '0 0 50%',
+                                borderBottom: '2px solid #5F52AA',
+                                display: 'flex',
+                                alignItems: 'center',
+                                justifyContent: 'center',
+                                padding: '2rem',
+                                boxSizing: 'border-box'
+                            }}>
+                                <div style={{
+                                    width: '100%',
+                                    height: '100%',
+                                    backgroundColor: '#5F52AA',
+                                    display: 'flex',
+                                    alignItems: 'center',
+                                    justifyContent: 'center',
+                                    color: '#FFFDF5',
+                                    fontSize: '2rem',
                                     fontWeight: 'bold'
                                 }}>
-                                    Project Developer
-                                </h3>
+                                    VIDEO
+                                </div>
+                            </div>
+
+                            {/* Project Developer Info (Bottom Right) */}
+                            <div className="reveal" style={{
+                                flex: 1,
+                                padding: '2rem',
+                                boxSizing: 'border-box',
+                                display: 'flex',
+                                flexDirection: 'column',
+                                justifyContent: 'space-between'
+                            }}>
+                                <div>
+                                    <h3 style={{
+                                        fontSize: 'clamp(1.5rem, 3vw, 2.5rem)',
+                                        color: '#5F52AA',
+                                        marginBottom: '0.5rem',
+                                        fontFamily: 'Arial, sans-serif',
+                                        fontWeight: 'normal',
+                                        lineHeight: 1
+                                    }}>
+                                        Project Developer
+                                    </h3>
+                                    <p style={{
+                                        fontSize: 'clamp(0.9rem, 1.2vw, 1rem)',
+                                        color: '#5F52AA',
+                                        marginBottom: '0',
+                                        fontFamily: 'Arial, sans-serif',
+                                        fontWeight: 'bold'
+                                    }}>
+                                        Design, Engineering & Production
+                                    </p>
+                                </div>
                                 <p style={{
-                                    fontSize: 'clamp(0.9rem, 2vw, 1rem)',
-                                    color: '#282824',
-                                    marginBottom: '1.5rem',
+                                    fontSize: 'clamp(0.9rem, 1.2vw, 1rem)',
+                                    color: '#5F52AA',
+                                    lineHeight: 1.5,
                                     fontFamily: 'Arial, sans-serif'
                                 }}>
-                                    Design, Engineering & Production
-                                </p>
-                                <p style={{
-                                    fontSize: 'clamp(0.85rem, 2vw, 0.95rem)',
-                                    color: '#282824',
-                                    lineHeight: 1.6,
-                                    fontFamily: 'Arial, sans-serif'
-                                }}>
-                                    Powering The Future From What's Left Behind Lorem ipsum dolor sit amet, consectetuer adipiscing elit, sed diam nonummy nibh euismod tincidunt ut laoreet dolore magna aliquam erat volutpat. d
+                                    Powering The Future From What's Left Behind. Lorem ipsum dolor sit amet, consectetuer adipiscing elit.
                                 </p>
                             </div>
                         </div>
                     </div>
                 </section>
 
-                {/* SECTION 5: PILLARS */}
+                {/* SECTION 6: PILLARS (5-Box Grid Layout) */}
                 <section style={{
                     backgroundColor: '#5F52AA',
                     color: '#FFFDF5',
-                    padding: '6rem 0',
-                    minHeight: '60vh',
+                    minHeight: '100vh',
                     display: 'flex',
-                    flexDirection: 'column',
+                    alignItems: 'center',
                     justifyContent: 'center',
                     width: '100%',
                     overflowX: 'hidden'
                 }}>
                     <div className="pillars-grid" style={{
-                        maxWidth: '1200px',
-                        margin: '0 auto',
-                        padding: '0 2rem',
-                        display: 'grid',
-                        gridTemplateColumns: '50% 50%',
-                        gap: '4rem',
-                        alignItems: 'center',
+                        maxWidth: '1600px',
                         width: '100%',
+                        height: '100vh', // Force full viewport height
+                        margin: '0 auto',
+                        padding: '2rem',
+                        display: 'grid',
+                        gridTemplateColumns: 'minmax(0, 1fr)', // single column
+                        gridTemplateRows: '46fr 15fr 13fr 13fr 13fr', // User specified percentages
                         boxSizing: 'border-box'
                     }}>
-                        {/* Left: Large "pillars" heading */}
-                        <div style={{ width: '100%' }}>
-                            <h2 className="reveal" style={{
-                                fontSize: 'clamp(3rem, 10vw, 9rem)',
-                                lineHeight: 0.85,
-                                fontFamily: 'Arial, sans-serif',
+                        {/* BOX 1: Pillars Title (Row 1) */}
+                        <div className="reveal" style={{
+                            gridRow: '1',
+                            display: 'flex',
+                            alignItems: 'center',
+                            paddingBottom: '2rem',
+                            justifyContent: 'flex-start' // 1. Left
+                        }}>
+                            <h2 style={{
+                                fontSize: 'clamp(8rem, 15vw, 20rem)', // Slightly smaller max to fit
+                                lineHeight: 0.8,
+                                fontFamily: 'Catalogue',
                                 fontWeight: 'bold',
                                 margin: 0,
-                                wordBreak: 'break-word'
+                                letterSpacing: '0.02em',
+                                wordBreak: 'break-word',
+                                color: '#FFFDF5',
+                                textTransform: 'lowercase'
                             }}>
                                 pillars
                             </h2>
                         </div>
 
-                        {/* Right: Content */}
-                        <div style={{ width: '100%' }}>
-                            {/* Circular icon and paragraph */}
-                            <div className="pillars-content-flex" style={{
-                                display: 'flex',
-                                gap: '1.5rem',
-                                marginBottom: '3rem',
-                                alignItems: 'flex-start',
-                                width: '100%'
+                        {/* BOX 2: Dot and Sentences (Row 2) */}
+                        <div className="reveal" style={{
+                            gridRow: '2',
+                            display: 'flex',
+                            gap: '2rem',
+                            alignItems: 'flex-start',
+                            padding: '2rem 0',
+                            borderBottom: '1px solid rgba(255,255,255,0.3)',
+                            marginLeft: '45%' // 2-5. Middle to Right
+                        }}>
+                            <div style={{
+                                width: '60px',
+                                height: '60px',
+                                borderRadius: '50%',
+                                backgroundColor: '#FFFDF5',
+                                flexShrink: 0
+                            }}></div>
+                            <p style={{
+                                fontSize: 'clamp(0.9rem, 1.2vw, 1.1rem)',
+                                lineHeight: 1.5,
+                                fontFamily: '"Catalogue", Arial, sans-serif',
+                                margin: 0,
+                                maxWidth: '600px'
                             }}>
-                                <div style={{
-                                    width: '50px',
-                                    height: '50px',
-                                    borderRadius: '50%',
-                                    backgroundColor: '#FFFDF5',
-                                    flexShrink: 0
-                                }}></div>
-                                <div style={{ flex: 1, width: '100%' }}>
-                                    <p style={{
-                                        fontSize: 'clamp(0.85rem, 2vw, 0.95rem)',
-                                        lineHeight: 1.6,
-                                        fontFamily: 'Arial, sans-serif',
-                                        marginBottom: '1rem'
-                                    }}>
-                                        Lorem ipsum dolor sit amet, consectetuer adipiscing elit, sed diam nonummy nibh euismod tincidunt ut laoreet dolore magna aliquam erat volutpat. Ut wisi enim ad minim veniam, quis nostrud
-                                    </p>
-                                    <div style={{
-                                        width: '20px',
-                                        height: '20px',
-                                        backgroundColor: '#FFC933',
-                                        marginLeft: 'auto'
-                                    }}></div>
-                                </div>
-                            </div>
+                                Lorem ipsum dolor sit amet, consectetuer adipiscing elit, sed diam nonummy nibh euismod tincidunt ut laoreet dolore magna aliquam erat volutpat. Ut wisi enim ad minim veniam, quis nostrud
+                            </p>
+                        </div>
 
-                            {/* Three pillar items */}
-                            <ul style={{ listStyle: 'none', padding: 0, margin: 0, width: '100%' }}>
-                                {['Top talents as partners', 'Innovation', 'Sustainable'].map(item => (
-                                    <li key={item} className="reveal" style={{
-                                        fontSize: 'clamp(1.1rem, 3vw, 1.5rem)',
-                                        padding: '1.5rem 0',
-                                        borderBottom: '1px solid rgba(255,255,255,0.3)',
-                                        fontFamily: 'Arial, sans-serif'
-                                    }}>
-                                        {item}
-                                    </li>
-                                ))}
-                            </ul>
+                        {/* BOX 3: Top Talents (Row 3) */}
+                        <div className="reveal" style={{
+                            gridRow: '3',
+                            padding: '2rem 0',
+                            borderBottom: '1px solid rgba(255,255,255,0.3)',
+                            display: 'flex',
+                            alignItems: 'center',
+                            marginLeft: '45%' // Middle to Right
+                        }}>
+                            <h3 style={{
+                                fontSize: 'clamp(1.5rem, 3vw, 2.5rem)',
+                                fontFamily: '"Catalogue", sans-serif',
+                                fontWeight: 'normal',
+                                margin: 0,
+                                textTransform: 'none'
+                            }}>Top talents as partners</h3>
+                        </div>
+
+                        {/* BOX 4: Innovation (Row 4) */}
+                        <div className="reveal" style={{
+                            gridRow: '4',
+                            padding: '2rem 0',
+                            borderBottom: '1px solid rgba(255,255,255,0.3)',
+                            display: 'flex',
+                            alignItems: 'center',
+                            marginLeft: '45%' // Middle to Right
+                        }}>
+                            <h3 style={{
+                                fontSize: 'clamp(1.5rem, 3vw, 2.5rem)',
+                                fontFamily: '"Catalogue", sans-serif',
+                                fontWeight: 'normal',
+                                margin: 0,
+                                textTransform: 'none'
+                            }}>Innovation</h3>
+                        </div>
+
+                        {/* BOX 5: Sustainable (Row 5) */}
+                        <div className="reveal" style={{
+                            gridRow: '5',
+                            padding: '2rem 0 0 0', // No bottom padding/border
+                            display: 'flex',
+                            alignItems: 'center',
+                            marginLeft: '45%' // Middle to Right
+                        }}>
+                            <h3 style={{
+                                fontSize: 'clamp(1.5rem, 3vw, 2.5rem)',
+                                fontFamily: '"Catalogue", sans-serif',
+                                fontWeight: 'normal',
+                                margin: 0,
+                                textTransform: 'none'
+                            }}>Sustainable</h3>
                         </div>
                     </div>
                 </section>
