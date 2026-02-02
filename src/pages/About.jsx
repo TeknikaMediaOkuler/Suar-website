@@ -62,15 +62,18 @@ const About = () => {
                             padding: '2rem',
                             boxSizing: 'border-box'
                         }}>
-                            <h2 className="reveal" style={{
-                                fontSize: 'clamp(10rem, 20vw, 40rem)',
+                            <h2 className="reveal about-heading" style={{
+                                fontSize: 'clamp(5rem, 15vw, 40rem)', /* Reduced min size */
                                 lineHeight: 0.8,
                                 fontFamily: '"Catalogue", sans-serif',
                                 fontWeight: 'bold',
                                 margin: 0,
                                 letterSpacing: '0.02em',
                                 color: '#5F52AA',
-                                textTransform: 'lowercase'
+                                textTransform: 'lowercase',
+                                wordBreak: 'break-word',
+                                width: '100%',
+                                textAlign: 'center'
                             }}>
                                 about
                             </h2>
@@ -420,6 +423,24 @@ const About = () => {
                     .about-grid > div {
                         border-right: none !important;
                         border-bottom: 2px solid #5F52AA;
+                    }
+                    /* Pillars Mobile Reset */
+                    .pillars-grid {
+                        grid-template-columns: 1fr !important;
+                        grid-template-rows: auto !important;
+                        height: auto !important;
+                        gap: 2rem !important;
+                        display: flex !important;
+                        flex-direction: column !important;
+                    }
+                    .pillars-grid > div {
+                        grid-row: auto !important;
+                        margin-left: 0 !important;
+                        padding: 1rem 0 !important;
+                        border-bottom: 1px solid rgba(255,255,255,0.3) !important;
+                    }
+                    .pillars-grid h2 {
+                        font-size: 20vw !important; /* Scale down Pillars title */
                     }
                 }
             `}</style>

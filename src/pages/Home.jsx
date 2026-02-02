@@ -271,6 +271,10 @@ const Home = () => {
                         grid-template-columns: 1fr !important;
                         gap: 2rem !important;
                     }
+                    .about-heading {
+                        font-size: 25vw !important; /* Specific mobile override to fit safely */
+                        text-align: center !important;
+                    }
 
                     .pillars-grid {
                         grid-template-columns: 1fr !important;
@@ -568,15 +572,18 @@ const Home = () => {
                             padding: '2rem',
                             boxSizing: 'border-box'
                         }}>
-                            <h2 className="reveal" style={{
-                                fontSize: 'clamp(10rem, 20vw, 40rem)',
+                            <h2 className="reveal about-heading" style={{
+                                fontSize: 'clamp(5rem, 15vw, 40rem)', /* Reduced min size and vw scale */
                                 lineHeight: 0.8,
                                 fontFamily: '"Catalogue", sans-serif',
                                 fontWeight: 'bold',
                                 margin: 0,
                                 letterSpacing: '0.02em',
                                 color: '#5F52AA',
-                                textTransform: 'lowercase'
+                                textTransform: 'lowercase',
+                                wordBreak: 'break-word', /* Prevent rigid overflow */
+                                width: '100%',
+                                textAlign: 'center'
                             }}>
                                 about
                             </h2>

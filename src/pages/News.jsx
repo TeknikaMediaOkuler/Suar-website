@@ -23,7 +23,7 @@ const News = () => {
                         </div>
                     </div>
 
-                    <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: '3rem' }}>
+                    <div className="news-grid" style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '3rem' }}>
                         {products.map((item, index) => (
                             <div key={index} style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
                                 {/* Image Thumbnail Placeholder */}
@@ -80,6 +80,20 @@ const News = () => {
                         ))}
                     </div>
                 </div>
+                <style>{`
+                    @media (max-width: 768px) {
+                        .container {
+                            padding: 0 1rem !important;
+                        }
+                        .news-grid {
+                            gap: 2rem !important;
+                            grid-template-columns: 1fr !important;
+                        }
+                        .page-news h1 {
+                            font-size: 15vw !important; /* Scale down title */
+                        }
+                    }
+                `}</style>
             </div>
         </div>
     );

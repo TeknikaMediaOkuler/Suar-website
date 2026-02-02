@@ -190,7 +190,7 @@ const Services = () => {
                         </h2>
 
                         {/* Bottom Content Area */}
-                        <div className="reveal" style={{
+                        <div className="reveal services-bottom-content" style={{
                             alignSelf: 'center',
                             marginTop: 'auto',
                             paddingTop: '8rem',
@@ -268,6 +268,17 @@ const Services = () => {
                         border-right: none !important;
                         border-bottom: 2px solid #5F52AA;
                         min-height: 200px;
+                    }
+                    
+                    /* Hero Mobile Tweaks */
+                    .reveal.services-bottom-content {
+                        flex-direction: column !important;
+                        align-items: flex-start !important;
+                        padding-top: 2rem !important;
+                    }
+                    .services-bottom-content > div {
+                        width: 60px !important;
+                        height: 60px !important;
                     }
                 }
             `}</style>
