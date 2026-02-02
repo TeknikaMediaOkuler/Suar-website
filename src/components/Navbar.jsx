@@ -2,38 +2,26 @@ import { Link } from 'react-router-dom';
 import { useState, useEffect } from 'react';
 import { gsap } from 'gsap';
 // Importing the Logo
-import Logo from '../assets/Images/SUAR - LOGO-06.png'; // Using Logo-06 (approx 50kb, good size)
+import Logo from '../assets/Images/SUAR - LOGO-02.png'; // Updated to LOGO-02 to match Home.jsx
 
-const Navbar = ({ isHome }) => {
+const Navbar = ({ isHome = false }) => {
     const [isOpen, setIsOpen] = useState(false);
-    const [scrolled, setScrolled] = useState(false);
-    const [isVisible, setIsVisible] = useState(!isHome);
+    const [isVisible, setIsVisible] = useState(!isHome); // If not home, visible by default
 
+    // Scroll listener for visibility on Home
     useEffect(() => {
-        setIsVisible(!isHome);
-    }, [isHome]);
+        if (!isHome) {
+            setIsVisible(true);
+            return;
+        }
 
-    // Scroll listener for logo size animation and visibility
-    useEffect(() => {
         const handleScroll = () => {
             const currentScrollY = window.scrollY;
-
-            // Logo size logic
+            // Show after 100px scroll on Home
             if (currentScrollY > 100) {
-                setScrolled(true);
-            } else {
-                setScrolled(false);
-            }
-
-            // Visibility logic
-            if (isHome) {
-                if (currentScrollY > window.innerHeight * 0.8) {
-                    setIsVisible(true);
-                } else {
-                    setIsVisible(false);
-                }
-            } else {
                 setIsVisible(true);
+            } else {
+                setIsVisible(false);
             }
         };
 
@@ -58,122 +46,90 @@ const Navbar = ({ isHome }) => {
     }, [isOpen]);
 
     const navLinks = [
-        { name: 'about', path: '/' },
-        { name: 'project', path: '/work' },
-        { name: 'services', path: '/services' },
-        { name: 'product', path: '/articles' },
-        { name: 'contact', path: '/contact' }
+        { name: 'Home', path: '/' },
+        { name: 'About', path: '/about' },
+        { name: 'Services', path: '/services' },
+        { name: 'News', path: '/news' }
     ];
 
     return (
         <>
-            <header style={{
+            <nav style={{
                 position: 'fixed',
                 top: 0,
                 left: 0,
                 width: '100%',
                 height: '80px',
-                padding: '0 2rem',
-                display: 'flex',
-                justifyContent: 'space-between',
-                alignItems: 'center',
-                zIndex: 1000,
                 backgroundColor: '#FFFDF5',
-                borderBottom: 'none',
-                color: '#282824',
-                transition: 'all 0.3s ease',
-                transform: isVisible ? 'translateY(0)' : 'translateY(-120%)'
+                display: 'flex',
+                justifyContent: 'flex-start',
+                alignItems: 'center',
+                padding: '0',
+                boxSizing: 'border-box',
+                zIndex: 1000,
+                borderBottom: '2px solid #5F52AA',
+                transform: isVisible ? 'translateY(0)' : 'translateY(-100%)',
+                transition: 'transform 0.3s ease-in-out'
             }}>
-
-                {/* LOGO AREA - with scroll animation */}
-                <Link to="/" style={{
+                {/* Logo Area */}
+                <div style={{
                     height: '100%',
                     display: 'flex',
                     alignItems: 'center',
-                    paddingRight: '2rem'
+                    padding: '0 2rem',
+                    borderRight: '2px solid #5F52AA'
                 }}>
-                    <img
-                        src={Logo}
-                        alt="SUAR"
-                        style={{
-                            height: scrolled ? '50px' : '120px',
-                            objectFit: 'contain',
-                            transition: 'height 0.3s ease'
-                        }}
-                    />
-                </Link>
+                    <img src={Logo} alt="SUAR" style={{ height: '40px', width: 'auto' }} />
+                </div>
 
-                {/* DESKTOP NAVIGATION */}
-                <nav style={{
+                {/* Desktop Nav Links */}
+                <div className="desktop-nav-links" style={{
                     display: 'flex',
+                    gap: '3rem',
                     alignItems: 'center',
-                    gap: '2rem',
+                    paddingLeft: '3rem',
+                    flex: 1
                 }}>
-                    <div className="desktop-nav" style={{
-                        display: 'flex',
-                        alignItems: 'center',
-                        gap: '2rem'
-                    }}>
-                        {navLinks.map(link => (
-                            <Link
-                                key={link.name}
-                                to={link.path}
-                                style={{
-                                    textDecoration: 'none',
-                                    color: '#282824',
-                                    fontSize: '0.9rem',
-                                    fontWeight: 'bold',
-                                    fontFamily: 'var(--content-font)',
-                                    textTransform: 'lowercase',
-                                    display: 'flex',
-                                    alignItems: 'center'
-                                }}
-                            >
-                                <span style={{ fontSize: '1.2rem', color: '#5F52AA', marginRight: '5px', lineHeight: 0 }}>•</span>
-                                {link.name}
-                            </Link>
-                        ))}
-                    </div>
+                    {navLinks.map((item) => (
+                        <Link
+                            key={item.name}
+                            to={item.path}
+                            style={{
+                                textDecoration: 'none',
+                                color: '#5F52AA',
+                                fontSize: '1rem',
+                                fontFamily: '"Catalogue", sans-serif',
+                                fontWeight: 'bold',
+                                display: 'flex',
+                                alignItems: 'center',
+                                gap: '0.5rem',
+                                textTransform: 'lowercase'
+                            }}
+                        >
+                            <span style={{
+                                color: '#FFC933',
+                                fontSize: '0.6em',
+                                transform: 'rotate(-45deg)', // Point South-East
+                                display: 'inline-block'
+                            }}>▼</span>
+                            {item.name}
+                        </Link>
+                    ))}
+                </div>
 
-                    {/* MOBILE HAMBURGER */}
-                    <button
-                        className="mobile-hamburger"
-                        onClick={() => setIsOpen(!isOpen)}
-                        style={{
-                            display: 'none',
-                            background: 'none',
-                            border: 'none',
-                            cursor: 'pointer',
-                            flexDirection: 'column',
-                            gap: '5px',
-                            padding: '10px'
-                        }}
-                        aria-label="Toggle menu"
-                    >
-                        <span style={{
-                            width: '25px',
-                            height: '3px',
-                            backgroundColor: '#5F52AA',
-                            transition: 'all 0.3s ease',
-                            transform: isOpen ? 'rotate(45deg) translateY(8px)' : 'none'
-                        }}></span>
-                        <span style={{
-                            width: '25px',
-                            height: '3px',
-                            backgroundColor: '#5F52AA',
-                            transition: 'all 0.3s ease',
-                            opacity: isOpen ? 0 : 1
-                        }}></span>
-                        <span style={{
-                            width: '25px',
-                            height: '3px',
-                            backgroundColor: '#5F52AA',
-                            transition: 'all 0.3s ease',
-                            transform: isOpen ? 'rotate(-45deg) translateY(-8px)' : 'none'
-                        }}></span>
-                    </button>
-                </nav>
-            </header>
+                {/* Mobile Menu Icon */}
+                <div
+                    className="mobile-menu-icon"
+                    onClick={() => setIsOpen(!isOpen)}
+                    style={{ cursor: 'pointer', paddingRight: '2rem', marginLeft: 'auto' }}
+                >
+                    <svg width="30" height="30" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M3 12H21" stroke="#5F52AA" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" />
+                        <path d="M3 6H21" stroke="#5F52AA" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" />
+                        <path d="M3 18H21" stroke="#5F52AA" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" />
+                    </svg>
+                </div>
+            </nav>
 
             {/* MOBILE ACCORDION MENU */}
             <div
@@ -201,38 +157,40 @@ const Navbar = ({ isHome }) => {
                                 display: 'flex',
                                 alignItems: 'center',
                                 textDecoration: 'none',
-                                color: '#282824',
+                                color: '#5F52AA',
                                 fontSize: '1.2rem',
                                 fontWeight: 'bold',
-                                fontFamily: 'var(--content-font)',
+                                fontFamily: '"Catalogue", sans-serif',
                                 textTransform: 'lowercase',
                                 padding: '1rem 0',
                                 borderBottom: '1px solid rgba(95, 82, 170, 0.2)'
                             }}
                         >
-                            <span style={{ fontSize: '1.5rem', color: '#5F52AA', marginRight: '10px', lineHeight: 0 }}>•</span>
+                            <span style={{ fontSize: '1.5rem', color: '#FFC933', marginRight: '10px', lineHeight: 0, transform: 'rotate(-45deg)' }}>▼</span>
                             {link.name}
                         </Link>
                     ))}
                 </nav>
             </div>
 
-            {/* RESPONSIVE STYLES */}
             <style>{`
-                @media (max-width: 768px) {
-                    .desktop-nav {
+                 /* Responsive Styles for Navbar */
+                 @media (max-width: 768px) {
+                     .desktop-nav-links {
+                         display: none !important;
+                     }
+                     .mobile-menu-icon {
+                         display: block !important;
+                     }
+                 }
+                 @media (min-width: 769px) {
+                     .mobile-menu-icon {
+                         display: none !important;
+                     }
+                      .mobile-menu {
                         display: none !important;
                     }
-                    .mobile-hamburger {
-                        display: flex !important;
-                    }
-                }
-                
-                @media (min-width: 769px) {
-                    .mobile-menu {
-                        display: none !important;
-                    }
-                }
+                 }
             `}</style>
         </>
     );

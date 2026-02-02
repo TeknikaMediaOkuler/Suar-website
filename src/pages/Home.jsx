@@ -1,28 +1,130 @@
-import React, { useRef, useEffect } from 'react';
+import React, { useRef, useEffect, useState } from 'react';
 import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { Link } from 'react-router-dom';
 import Logo from '../assets/Images/SUAR - LOGO-02.png';
-import Container3D from '../components/Container3D';
+// import Container3D from '../components/Container3D';
+import Navbar from '../components/Navbar'; // Commented out as per previous file content
 
 gsap.registerPlugin(ScrollTrigger);
 
+const CapacityAccordion = () => {
+    const [activeIndex, setActiveIndex] = useState(0);
+
+    const data = [
+        { id: '01', title: 'Production', value: '500k', unit: 'Tons/Year', desc: 'High-volume biomass pellet production capacity ensuring steady supply chains and reliable delivery for industrial partners.' },
+        { id: '02', title: 'Storage', value: '50k', unit: 'Sqm', desc: 'Extensive warehousing facilities designed to maintain optimal conditions, ensuring stock buffers and product quality year-round.' },
+        { id: '03', title: 'Logistics', value: '100+', unit: 'Fleet', desc: 'Dedicated fleet and strategic logistics partnerships enabling efficient, timely global and local distribution networks.' },
+        { id: '04', title: 'Partners', value: '25+', unit: 'Global', desc: 'Strategic alliances with industry leaders and technology providers across the renewable energy and biomass sectors.' }
+    ];
+
+    return (
+        <div className="capacity-accordion reveal" style={{
+            display: 'flex',
+            width: '100%',
+            height: '600px', // Fixed height
+            gap: '0',
+            borderTop: '2px solid #FFFDF5',
+            borderBottom: '2px solid #FFFDF5'
+        }}>
+            {data.map((item, index) => {
+                const isActive = index === activeIndex;
+                return (
+                    <div
+                        key={item.id}
+                        onClick={() => setActiveIndex(index)}
+                        style={{
+                            flex: isActive ? '3' : '0.5', // Flex grow logic
+                            backgroundColor: isActive ? '#FFFDF5' : '#5F52AA',
+                            color: isActive ? '#5F52AA' : '#FFFDF5',
+                            borderRight: index !== data.length - 1 ? '1px solid #FFFDF5' : 'none', // Separator
+                            borderLeft: index === 0 ? '1px solid #FFFDF5' : 'none',
+                            position: 'relative',
+                            cursor: 'pointer',
+                            overflow: 'hidden',
+                            transition: 'all 0.5s cubic-bezier(0.25, 1, 0.5, 1)', // Smooth ease
+                            display: 'flex',
+                            flexDirection: 'column',
+                            justifyContent: 'space-between',
+                            padding: '2rem'
+                        }}
+                    >
+                        {/* Inactive State Content (Visible when collapsed) */}
+                        <div style={{
+                            position: 'absolute',
+                            top: '2rem',
+                            left: '50%',
+                            transform: 'translateX(-50%)',
+                            opacity: isActive ? 0 : 1,
+                            transition: 'opacity 0.3s',
+                            pointerEvents: 'none',
+                            display: 'flex',
+                            flexDirection: 'column',
+                            alignItems: 'center',
+                            height: '100%',
+                            justifyContent: 'space-between',
+                            paddingBottom: '2rem'
+                        }}>
+                            <span style={{ fontSize: '1.2rem', fontWeight: 'bold' }}>{item.id}</span>
+                            <span style={{
+                                fontSize: '1.5rem',
+                                writingMode: 'vertical-rl',
+                                textOrientation: 'mixed',
+                                transform: 'rotate(180deg)',
+                                whiteSpace: 'nowrap',
+                                textTransform: 'uppercase',
+                                letterSpacing: '0.1em'
+                            }}>{item.title}</span>
+                            <span></span> {/* Spacer */}
+                        </div>
+
+                        {/* Active State Content (Visible when expanded) */}
+                        <div style={{
+                            opacity: isActive ? 1 : 0,
+                            transition: 'opacity 0.4s 0.2s', // Delay fade in
+                            display: 'flex',
+                            flexDirection: 'column',
+                            justifyContent: 'space-between',
+                            height: '100%',
+                            minWidth: '400px' // Prevent text wrapping weirdly during transition
+                        }}>
+                            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
+                                <h3 style={{ fontSize: '3rem', margin: 0, fontFamily: 'Arial, sans-serif' }}>{item.title}</h3>
+                                <span style={{ fontSize: '1.2rem', fontWeight: 'bold' }}>{item.id}</span>
+                            </div>
+
+                            <div style={{ marginTop: 'auto' }}>
+                                <div style={{ fontSize: '5rem', fontWeight: 'bold', lineHeight: 1 }}>{item.value}</div>
+                                <div style={{ fontSize: '1.5rem', marginBottom: '2rem', opacity: 0.8 }}>{item.unit}</div>
+                                <p style={{ fontSize: '1.2rem', maxWidth: '80%' }}>{item.desc}</p>
+                            </div>
+                        </div>
+                    </div>
+                );
+            })}
+            <style>{`
+                @media (max-width: 768px) {
+                    .capacity-accordion {
+                        flex-direction: column !important;
+                        height: auto !important;
+                    }
+                    .capacity-accordion > div {
+                        flex: auto !important;
+                        width: 100% !important;
+                        height: auto !important;
+                        min-height: 100px; /* Collapsed height mobile */
+                        border-right: none !important;
+                        border-bottom: 1px solid #FFFDF5;
+                    }
+                     /* Mobile Active State adjustments could go here */
+                }
+            `}</style>
+        </div>
+    );
+};
+
 const Home = () => {
     const tickerRef = useRef(null);
-    const [showStickyNav, setShowStickyNav] = React.useState(false);
-
-    useEffect(() => {
-        const handleScroll = () => {
-            if (window.scrollY > 100) {
-                setShowStickyNav(true);
-            } else {
-                setShowStickyNav(false);
-            }
-        };
-
-        window.addEventListener('scroll', handleScroll);
-        return () => window.removeEventListener('scroll', handleScroll);
-    }, []);
 
     useEffect(() => {
         ScrollTrigger.refresh();
@@ -199,88 +301,12 @@ const Home = () => {
 
             <div className="page-home" style={{ marginTop: '0', overflowX: 'hidden', width: '100%' }}>
 
+
                 {/* Fixed 3D Container Layer - HIDDEN FOR NOW */}
                 {/* <Container3D /> */}
 
-                {/* STICKY NAVBAR (Visible on Scroll) */}
-                <nav style={{
-                    position: 'fixed',
-                    top: 0,
-                    left: 0,
-                    width: '100%',
-                    height: '80px',
-                    backgroundColor: '#FFFDF5',
-                    display: 'flex',
-                    justifyContent: 'flex-start',
-                    alignItems: 'center',
-                    padding: '0',
-                    boxSizing: 'border-box',
-                    zIndex: 1000,
-                    borderBottom: '2px solid #5F52AA',
-                    transform: showStickyNav ? 'translateY(0)' : 'translateY(-100%)',
-                    transition: 'transform 0.3s ease-in-out'
-                }}>
-                    {/* Logo Area */}
-                    <div style={{
-                        height: '100%',
-                        display: 'flex',
-                        alignItems: 'center',
-                        padding: '0 2rem',
-                        borderRight: '2px solid #5F52AA'
-                    }}>
-                        <img src={Logo} alt="SUAR" style={{ height: '40px', width: 'auto' }} />
-                    </div>
-
-                    {/* Desktop Nav Links */}
-                    <div className="desktop-nav-links" style={{
-                        display: 'flex',
-                        gap: '3rem',
-                        alignItems: 'center',
-                        paddingLeft: '3rem',
-                        flex: 1
-                    }}>
-                        {[
-                            { name: 'about', path: '/' },
-                            { name: 'project', path: '/work' },
-                            { name: 'services', path: '/services' },
-                            { name: 'product', path: '/articles' },
-                            { name: 'contact', path: '/contact' }
-                        ].map((item) => (
-                            <Link
-                                key={item.name}
-                                to={item.path}
-                                style={{
-                                    textDecoration: 'none',
-                                    color: '#5F52AA',
-                                    fontSize: '1rem',
-                                    fontFamily: '"Catalogue", sans-serif',
-                                    fontWeight: 'bold',
-                                    display: 'flex',
-                                    alignItems: 'center',
-                                    gap: '0.5rem',
-                                    textTransform: 'lowercase'
-                                }}
-                            >
-                                <span style={{
-                                    color: '#FFC933',
-                                    fontSize: '0.6em',
-                                    transform: 'rotate(-45deg)', // Point South-East
-                                    display: 'inline-block'
-                                }}>▼</span>
-                                {item.name}
-                            </Link>
-                        ))}
-                    </div>
-
-                    {/* Mobile Menu Icon (Placeholder) */}
-                    <div className="mobile-menu-icon" style={{ cursor: 'pointer', paddingRight: '2rem', marginLeft: 'auto' }}>
-                        <svg width="30" height="30" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                            <path d="M3 12H21" stroke="#5F52AA" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" />
-                            <path d="M3 6H21" stroke="#5F52AA" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" />
-                            <path d="M3 18H21" stroke="#5F52AA" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" />
-                        </svg>
-                    </div>
-                </nav>
+                {/* GLOBAL NAVBAR - Passed isHome={true} to enable scroll-to-appear logic */}
+                <Navbar isHome={true} />
 
                 {/* SECTION 1: HERO */}
                 <section style={{
@@ -315,11 +341,10 @@ const Home = () => {
                                 {/* Desktop Nav Links */}
                                 <div className="desktop-nav-links">
                                     {[
-                                        { name: 'about', path: '/' },
-                                        { name: 'project', path: '/work' },
-                                        { name: 'services', path: '/services' },
-                                        { name: 'product', path: '/articles' },
-                                        { name: 'contact', path: '/contact' }
+                                        { name: 'Home', path: '/' },
+                                        { name: 'About', path: '/about' },
+                                        { name: 'Services', path: '/services' },
+                                        { name: 'News', path: '/news' }
                                     ].map((item) => (
                                         <Link
                                             key={item.name}
@@ -508,196 +533,9 @@ const Home = () => {
                 </section>
 
                 {/* SECTION 3: ABOUT (Grid Layout) - "About 2" */}
-                {/* SECTION 3: SERVICES TITLE */}
-                <section style={{
-                    backgroundColor: '#FFFDF5',
-                    color: '#5F52AA',
-                    minHeight: '100vh',
-                    display: 'flex',
-                    alignItems: 'center',
-                    borderBottom: '2px solid #5F52AA',
-                    width: '100%',
-                    overflowX: 'hidden'
-                }}>
-                    <div style={{
-                        maxWidth: '1600px',
-                        margin: '0 auto',
-                        padding: '2rem',
-                        width: '100%',
-                        boxSizing: 'border-box',
-                        display: 'flex',
-                        flexDirection: 'column',
-                        justifyContent: 'center',
-                        height: '100%'
-                    }}>
-                        <h2 className="reveal" style={{
-                            fontSize: 'clamp(10vw, 15vw, 28rem)',
-                            lineHeight: 1.2,
-                            fontFamily: '"Catalogue", sans-serif',
-                            fontWeight: 'bold',
-                            margin: 0,
-                            letterSpacing: '0.02em',
-                            textAlign: 'center',
-                            width: '100%',
-                            textTransform: 'lowercase',
-                        }}>
-                            services
-                        </h2>
 
-                        {/* Bottom Content Area */}
-                        <div className="reveal" style={{
-                            alignSelf: 'center',
-                            marginTop: 'auto',
-                            paddingTop: '8rem',
-                            display: 'flex',
-                            gap: '2rem',
-                            maxWidth: '800px', // Increased slightly to allow more text room
-                            width: '100%',
-                            justifyContent: 'flex-end',
-                            alignItems: 'flex-start' // Ensure text starts at top of box line
-                        }}>
-                            <div style={{
-                                width: '100px',
-                                height: '100px',
-                                backgroundColor: '#5F52AA',
-                                flexShrink: 0
-                            }}></div>
-                            <p style={{
-                                fontSize: '1rem',
-                                color: '#5F52AA',
-                                fontFamily: '"Catalogue", sans-serif'
-                            }}>
-                                Powering The Future From What's Left Behind<br />
-                                Lorem ipsum dolor sit amet, consectetuer adipiscing elit.
-                            </p>
-                        </div>
-                    </div>
-                </section>
 
-                {/* SECTION 4: CAPABILITIES LIST */}
-                <section style={{
-                    backgroundColor: '#FFFDF5',
-                    color: '#5F52AA',
-                    minHeight: '100vh',
-                    display: 'flex',
-                    flexDirection: 'column',
-                    width: '100%',
-                    overflowX: 'hidden'
-                }}>
-                    {/* Item 1: Project Developer */}
-                    <div className="reveal" style={{
-                        flex: 1,
-                        borderBottom: '2px solid #5F52AA',
-                        display: 'flex',
-                        width: '100%',
-                        alignItems: 'stretch'
-                    }}>
-                        <div style={{
-                            flex: '0 0 35%',
-                            maxWidth: '35%',
-                            padding: '4rem',
-                            display: 'flex',
-                            flexDirection: 'column',
-                            justifyContent: 'center'
-                        }}>
-                            <h3 style={{
-                                fontSize: 'clamp(2rem, 5vw, 4rem)',
-                                margin: '0 0 1rem 0',
-                                fontFamily: 'Arial, sans-serif'
-                            }}>Project Developer</h3>
-                            <p style={{
-                                fontSize: '1.2rem',
-                                marginBottom: '2rem',
-                                fontWeight: 'bold'
-                            }}>Design, Engineering & Production</p>
-                            <p style={{ maxWidth: '600px' }}>
-                                Powering The Future From What's Left Behind Lorem ipsum dolor sit amet, consectetuer adipiscing elit.
-                            </p>
-                        </div>
-                        <div style={{
-                            flex: '0 0 65%',
-                            maxWidth: '65%',
-                            alignSelf: 'stretch',
-                            minHeight: '100%',
-                            display: 'flex',
-                            alignItems: 'center',
-                            justifyContent: 'center',
-                            padding: '2rem',
-                            boxSizing: 'border-box'
-                        }}>
-                            <div style={{
-                                width: '100%',
-                                height: '100%',
-                                backgroundColor: '#5F52AA',
-                                display: 'flex',
-                                alignItems: 'center',
-                                justifyContent: 'center',
-                                color: '#FFFDF5',
-                                fontSize: '2rem',
-                                fontWeight: 'bold'
-                            }}>
 
-                            </div>
-                        </div>
-                    </div>
-
-                    {/* Item 2: EPC & Offtaker */}
-                    <div className="reveal" style={{
-                        flex: 1,
-                        borderBottom: '2px solid #5F52AA',
-                        display: 'flex',
-                        width: '100%',
-                        alignItems: 'stretch'
-                    }}>
-                        <div style={{
-                            flex: '0 0 35%',
-                            maxWidth: '35%',
-                            padding: '4rem',
-                            display: 'flex',
-                            flexDirection: 'column',
-                            justifyContent: 'center'
-                        }}>
-                            <h3 style={{
-                                fontSize: 'clamp(2rem, 5vw, 4rem)',
-                                margin: '0 0 1rem 0',
-                                fontFamily: 'Arial, sans-serif'
-                            }}>EPC & Offtaker</h3>
-                            <p style={{
-                                fontSize: '1.2rem',
-                                marginBottom: '2rem',
-                                fontWeight: 'bold'
-                            }}>Design, Engineering & Production</p>
-                            <p style={{ maxWidth: '600px' }}>
-                                Powering The Future From What's Left Behind Lorem ipsum dolor sit amet, consectetuer adipiscing elit.
-                            </p>
-                        </div>
-                        <div style={{
-                            flex: '0 0 65%',
-                            maxWidth: '65%',
-                            alignSelf: 'stretch',
-                            minHeight: '100%',
-                            display: 'flex',
-                            alignItems: 'center',
-                            justifyContent: 'center',
-                            padding: '2rem',
-                            boxSizing: 'border-box'
-                        }}>
-                            <div style={{
-                                width: '100%',
-                                height: '100%',
-                                backgroundColor: '#5F52AA',
-                                display: 'flex',
-                                alignItems: 'center',
-                                justifyContent: 'center',
-                                color: '#FFFDF5',
-                                fontSize: '2rem',
-                                fontWeight: 'bold'
-                            }}>
-
-                            </div>
-                        </div>
-                    </div>
-                </section>
 
                 {/* SECTION 5: ABOUT 2 (Former Grid Layout) */}
                 <section style={{
@@ -820,131 +658,38 @@ const Home = () => {
                     </div>
                 </section>
 
-                {/* SECTION 6: PILLARS (5-Box Grid Layout) */}
+
+
+                {/* SECTION 6: CAPACITY (Horizontal Accordion) */}
                 <section style={{
                     backgroundColor: '#5F52AA',
                     color: '#FFFDF5',
-                    minHeight: '100vh',
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center',
+                    padding: '6rem 0',
                     width: '100%',
-                    overflowX: 'hidden'
+                    overflowX: 'hidden',
+                    display: 'flex',
+                    flexDirection: 'column',
+                    alignItems: 'center'
                 }}>
-                    <div className="pillars-grid" style={{
+                    <div className="capacity-container" style={{
                         maxWidth: '1600px',
                         width: '100%',
-                        height: '100vh', // Force full viewport height
-                        margin: '0 auto',
-                        padding: '2rem',
-                        display: 'grid',
-                        gridTemplateColumns: 'minmax(0, 1fr)', // single column
-                        gridTemplateRows: '46fr 15fr 13fr 13fr 13fr', // User specified percentages
+                        padding: '0 2rem',
                         boxSizing: 'border-box'
                     }}>
-                        {/* BOX 1: Pillars Title (Row 1) */}
-                        <div className="reveal" style={{
-                            gridRow: '1',
-                            display: 'flex',
-                            alignItems: 'center',
-                            paddingBottom: '2rem',
-                            justifyContent: 'flex-start' // 1. Left
+                        <h2 className="reveal" style={{
+                            fontSize: 'clamp(3rem, 5vw, 6rem)',
+                            fontFamily: '"Catalogue", sans-serif',
+                            fontWeight: 'bold',
+                            margin: '0 0 4rem 0',
+                            color: '#FFFDF5',
+                            textTransform: 'uppercase',
+                            textAlign: 'left'
                         }}>
-                            <h2 style={{
-                                fontSize: 'clamp(8rem, 15vw, 20rem)', // Slightly smaller max to fit
-                                lineHeight: 0.8,
-                                fontFamily: 'Catalogue',
-                                fontWeight: 'bold',
-                                margin: 0,
-                                letterSpacing: '0.02em',
-                                wordBreak: 'break-word',
-                                color: '#FFFDF5',
-                                textTransform: 'lowercase'
-                            }}>
-                                pillars
-                            </h2>
-                        </div>
+                            Capacity
+                        </h2>
 
-                        {/* BOX 2: Dot and Sentences (Row 2) */}
-                        <div className="reveal" style={{
-                            gridRow: '2',
-                            display: 'flex',
-                            gap: '2rem',
-                            alignItems: 'flex-start',
-                            padding: '2rem 0',
-                            borderBottom: '1px solid rgba(255,255,255,0.3)',
-                            marginLeft: '45%' // 2-5. Middle to Right
-                        }}>
-                            <div style={{
-                                width: '60px',
-                                height: '60px',
-                                borderRadius: '50%',
-                                backgroundColor: '#FFFDF5',
-                                flexShrink: 0
-                            }}></div>
-                            <p style={{
-                                fontSize: 'clamp(0.9rem, 1.2vw, 1.1rem)',
-                                lineHeight: 1.5,
-                                fontFamily: '"Catalogue", Arial, sans-serif',
-                                margin: 0,
-                                maxWidth: '600px'
-                            }}>
-                                Lorem ipsum dolor sit amet, consectetuer adipiscing elit, sed diam nonummy nibh euismod tincidunt ut laoreet dolore magna aliquam erat volutpat. Ut wisi enim ad minim veniam, quis nostrud
-                            </p>
-                        </div>
-
-                        {/* BOX 3: Top Talents (Row 3) */}
-                        <div className="reveal" style={{
-                            gridRow: '3',
-                            padding: '2rem 0',
-                            borderBottom: '1px solid rgba(255,255,255,0.3)',
-                            display: 'flex',
-                            alignItems: 'center',
-                            marginLeft: '45%' // Middle to Right
-                        }}>
-                            <h3 style={{
-                                fontSize: 'clamp(1.5rem, 3vw, 2.5rem)',
-                                fontFamily: '"Catalogue", sans-serif',
-                                fontWeight: 'normal',
-                                margin: 0,
-                                textTransform: 'none'
-                            }}>Top talents as partners</h3>
-                        </div>
-
-                        {/* BOX 4: Innovation (Row 4) */}
-                        <div className="reveal" style={{
-                            gridRow: '4',
-                            padding: '2rem 0',
-                            borderBottom: '1px solid rgba(255,255,255,0.3)',
-                            display: 'flex',
-                            alignItems: 'center',
-                            marginLeft: '45%' // Middle to Right
-                        }}>
-                            <h3 style={{
-                                fontSize: 'clamp(1.5rem, 3vw, 2.5rem)',
-                                fontFamily: '"Catalogue", sans-serif',
-                                fontWeight: 'normal',
-                                margin: 0,
-                                textTransform: 'none'
-                            }}>Innovation</h3>
-                        </div>
-
-                        {/* BOX 5: Sustainable (Row 5) */}
-                        <div className="reveal" style={{
-                            gridRow: '5',
-                            padding: '2rem 0 0 0', // No bottom padding/border
-                            display: 'flex',
-                            alignItems: 'center',
-                            marginLeft: '45%' // Middle to Right
-                        }}>
-                            <h3 style={{
-                                fontSize: 'clamp(1.5rem, 3vw, 2.5rem)',
-                                fontFamily: '"Catalogue", sans-serif',
-                                fontWeight: 'normal',
-                                margin: 0,
-                                textTransform: 'none'
-                            }}>Sustainable</h3>
-                        </div>
+                        <CapacityAccordion />
                     </div>
                 </section>
 

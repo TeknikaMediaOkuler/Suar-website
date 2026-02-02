@@ -7,12 +7,9 @@ import Footer from './components/Footer';
 
 // Pages
 import Home from './pages/Home';
-import Work from './pages/Work';
-import ProjectDetail from './pages/ProjectDetail';
-import Agency from './pages/Agency';
+import About from './pages/About';
 import Services from './pages/Services';
-import Articles from './pages/Articles';
-import Contact from './pages/Contact';
+import News from './pages/News';
 
 // Scroll To Top component to handle route changes
 const ScrollToTop = () => {
@@ -39,12 +36,9 @@ function App() {
       <div className="app-content">
         <Routes>
           <Route path="/" element={<Home />} />
-          <Route path="/work" element={<Work />} />
-          <Route path="/work/:id" element={<ProjectDetail />} />
-          <Route path="/agency" element={<Agency />} />
+          <Route path="/about" element={<About />} />
           <Route path="/services" element={<Services />} />
-          <Route path="/articles" element={<Articles />} />
-          <Route path="/contact" element={<Contact />} />
+          <Route path="/news" element={<News />} />
         </Routes>
       </div>
       <Footer />
